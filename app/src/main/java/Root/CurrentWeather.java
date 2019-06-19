@@ -51,6 +51,6 @@ public class CurrentWeather {
     }
 
     private Drawable getImage() {
-        return null; 
+        return null;
     }
 }
