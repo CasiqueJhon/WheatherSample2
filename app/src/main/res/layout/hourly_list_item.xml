@@ -7,8 +7,9 @@
     android:layout_height="match_parent"
     tools:background="@drawable/bg_gradient_blue">
 
+
     <TextView
-        android:id="@+id/tv_day"
+        android:id="@+id/tv_hour_weather"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -17,27 +18,16 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Today"/>
+        tools:text="19:00"/>
 
     <TextView
-        android:id="@+id/tv_day_description"
+        android:id="@+id/tv_hour_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_day"
-        tools:text="partly claudy night"/>
-
-    <TextView
-        android:id="@+id/tv_rain_probability"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:textColor="@android:color/background_light"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_day_description"
-        tools:text="Rain probability"/>
+        app:layout_constraintTop_toBottomOf="@+id/tv_hour_weather"
+        tools:text="Description "/>
 </android.support.constraint.ConstraintLayout>

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">WheatherSample2</string>
+    <string name="no_data_to_display">No Data To Display</string>
 </resources>

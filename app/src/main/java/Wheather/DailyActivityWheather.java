@@ -1,6 +1,7 @@
 package Wheather;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.jhonisaac.wheathersample2.R;
@@ -16,23 +17,10 @@ public class DailyActivityWheather extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_wheather);
 
-        ArrayList<Day> days = new ArrayList<>();
-
-        for (int i = 0; i<500; i++) {
-
-            Day day = new Day();
-
-            day.setDayName("Monday");
-            day.setDayDescription("Rain");
-            day.setRainProbability("100%");
-
-            days.add(day);
-        }
-
+        Intent intent = getIntent();
+        //Getting the ArrayList from intent from WeatherActivity.
+        ArrayList<Day> days = intent.getParcelableArrayListExtra(WheatherActivity.DAYS_ARRAY_LIST);
         DailyWeatherAdapter dailyWeatherAdapter = new DailyWeatherAdapter(this, days);
-
         setListAdapter(dailyWeatherAdapter);
-
-
     }
 }

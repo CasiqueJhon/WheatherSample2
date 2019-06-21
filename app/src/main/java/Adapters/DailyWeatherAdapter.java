@@ -15,8 +15,8 @@ import Wheather.Day;
 
 public class DailyWeatherAdapter extends BaseAdapter {
 
-    ArrayList<Day> days;
-    Context mContext;
+    private ArrayList<Day> days;
+    private Context mContext;
 
     public DailyWeatherAdapter(Context context, ArrayList<Day> days) {
         this.mContext = context;
@@ -25,6 +25,8 @@ public class DailyWeatherAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
+        if (days == null)
+            return 0;
         return days.size();
     }
 
