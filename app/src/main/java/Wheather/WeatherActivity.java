@@ -1,8 +1,12 @@
 package Wheather;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,6 +18,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.jhonisaac.wheathersample2.R;
 
 import org.json.JSONArray;
@@ -31,9 +38,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class WheatherActivity extends AppCompatActivity {
+public class WeatherActivity extends AppCompatActivity {
 
-    public static final String URL_REQUEST = "https://api.darksky.net/forecast/29ac2f86be434312999df32b81cc69b4/40.251025,-3.702012?units=si";
+    //public static final String URL_REQUEST = "https://api.darksky.net/forecast/29ac2f86be434312999df32b81cc69b4/40.251025,-3.702012?units=si";
     public static final String DATA = "data";
     public static final String SUMMARY = "summary";
     public static final String DAILY = "daily";
@@ -50,19 +57,29 @@ public class WheatherActivity extends AppCompatActivity {
     public static final String PRECIP_PROBABILITY = "precipProbability";
     public static final String DAYS_ARRAY_LIST = "days";
     public static final String HOURS_ARRAY_LIST = "hours_array_list";
+    public static final String MINUTELY = "minutely";
 
-    @BindView(R.id.iv_icon) ImageView iconImageView;
-    @BindView(R.id.tv_temp_description) TextView tv_description_temp;
-    @BindView(R.id.tv_current_temp) TextView tv_current_temp;
-    @BindView(R.id.tv_max_temp) TextView tv_max_temp;
-    @BindView(R.id.tv_min_temp) TextView tv_min_temp;
-    @BindDrawable(R.drawable.clear_night) Drawable clearNight;
-    @BindView(R.id.tv_humidity) TextView humidity;
-    @BindView(R.id.tv_wind) TextView windSpeed;
+    @BindView(R.id.iv_icon)
+    ImageView iconImageView;
+    @BindView(R.id.tv_temp_description)
+    TextView tv_description_temp;
+    @BindView(R.id.tv_current_temp)
+    TextView tv_current_temp;
+    @BindView(R.id.tv_max_temp)
+    TextView tv_max_temp;
+    @BindView(R.id.tv_min_temp)
+    TextView tv_min_temp;
+    @BindDrawable(R.drawable.clear_night)
+    Drawable clearNight;
+    @BindView(R.id.tv_humidity)
+    TextView humidity;
+    @BindView(R.id.tv_wind)
+    TextView windSpeed;
 
     private ArrayList<Day> days;
     private ArrayList<Hour> hours;
-
+    private ArrayList<Minute> minutes;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
 
 
     @Override
@@ -71,9 +88,16 @@ public class WheatherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_wheather);
         ButterKnife.bind(this);
 
+
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String request = URL_REQUEST;
+        String forecastURL = "https://api.darksky.net/forecast";
+        String apiKey = "29ac2f86be434312999df32b81cc69b4";
+        String mLatitude = "40.251025";
+        String mLongitude = "-3.702012";
+        String units = "units=si";
+
+        String request = forecastURL + "/" +apiKey  + "/" + mLatitude + "," + mLongitude + "?" + units;
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, request,
@@ -84,6 +108,7 @@ public class WheatherActivity extends AppCompatActivity {
                             CurrentWeather currentWeather = getCurrentWeather(response);
                             days = getDailyWeatherFromJson(response);
                             hours = getHourlyWeather(response);
+
 
                             iconImageView.setImageDrawable(currentWeather.getIconDrawableResource());
                             tv_description_temp.setText(currentWeather.getDescription());
@@ -102,7 +127,7 @@ public class WheatherActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(WheatherActivity.this, "Connection Error",
+                Toast.makeText(WeatherActivity.this, "Connection Error",
                         Toast.LENGTH_LONG).show();
             }
         });
@@ -110,12 +135,37 @@ public class WheatherActivity extends AppCompatActivity {
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
 
+        //Location by GPS
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location == null) {
+
+                }
+            }
+        });
+
     }
 
 
     @OnClick(R.id.btn_daily)
     public void dailyWeatherClick() {
-        Intent dailyIntent = new Intent(WheatherActivity.this, DailyActivityWheather.class);
+        Intent dailyIntent = new Intent(WeatherActivity.this, DailyActivityWeather.class);
         //To put the parcelable content to the dailyWeatherActivity
         dailyIntent.putParcelableArrayListExtra(DAYS_ARRAY_LIST, days);
         startActivity(dailyIntent);
@@ -124,14 +174,15 @@ public class WheatherActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_hourly)
     public void hourlyListener() {
-        Intent hourlyIntent = new Intent(WheatherActivity.this, HourlyActivityWheather.class);
+        Intent hourlyIntent = new Intent(WeatherActivity.this, HourlyActivityWeather.class);
         hourlyIntent.putParcelableArrayListExtra(HOURS_ARRAY_LIST, hours);
         startActivity(hourlyIntent);
     }
 
     @OnClick(R.id.btn_minutely)
     public void minutelyListener() {
-        Intent minutelyIntent = new Intent(WheatherActivity.this, MinutelyActivityWheather.class);
+        Intent minutelyIntent = new Intent(WeatherActivity.this, MinutelyActivityWeather.class);
+        minutelyIntent.putParcelableArrayListExtra("MINUTELY_ARRAY_LIST" , minutes);
         startActivity(minutelyIntent);
     }
 
@@ -221,6 +272,35 @@ public class WheatherActivity extends AppCompatActivity {
            hours.add(hour);
         }
         return hours;
+    }
+
+    public ArrayList<Minute> getMinutesFromJson (String json) throws JSONException {
+
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        ArrayList<Minute> minutes = new ArrayList<>();
+
+        JSONObject jsonObject = new JSONObject(json);
+        String timezone = jsonObject.getString(TIMEZONE);
+        dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
+        JSONObject minutelyWeather = jsonObject.getJSONObject(MINUTELY);
+        JSONArray minutelyArray = minutelyWeather.getJSONArray(DATA);
+
+        for (int i = 0; i < minutelyArray.length(); i++) {
+
+            Minute minute = new Minute();
+            JSONObject minutelyArrayData = minutelyArray.getJSONObject(i);
+
+            String minutely = dateFormat.format(minutelyArrayData.getDouble(TIME)*1000);
+            String minutelyRainProbability = minutelyArrayData.getString(PRECIP_PROBABILITY);
+
+            minute.setMinuteWeather(minutely);
+            minute.setMinuteDescription(minutelyRainProbability);
+
+            minutes.add(minute);
+
+        }
+
+        return minutes;
     }
 
 }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import Adapters.HourlyWeatherAdapter;
 
-public class HourlyActivityWheather extends ListActivity {
+public class HourlyActivityWeather extends ListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +18,7 @@ public class HourlyActivityWheather extends ListActivity {
         setContentView(R.layout.activity_hourly_wheather);
 
         Intent intent = getIntent();
-        ArrayList<Hour> hours = intent.getParcelableArrayListExtra(WheatherActivity.HOURS_ARRAY_LIST);
+        ArrayList<Hour> hours = intent.getParcelableArrayListExtra(WeatherActivity.HOURS_ARRAY_LIST);
         HourlyWeatherAdapter hourlyWeatherAdapter = new HourlyWeatherAdapter(this, hours);
         setListAdapter(hourlyWeatherAdapter);
     }

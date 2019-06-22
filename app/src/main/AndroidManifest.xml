@@ -14,17 +14,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="Wheather.MinutelyActivityWheather">
+        <activity android:name="Wheather.MinutelyActivityWeather">
         </activity>
         <activity
-            android:name="Wheather.HourlyActivityWheather"
-            android:parentActivityName="Wheather.WheatherActivity">
+            android:name="Wheather.HourlyActivityWeather"
+            android:parentActivityName="Wheather.WeatherActivity">
         </activity>
         <activity
-            android:name="Wheather.DailyActivityWheather"
-            android:parentActivityName="Wheather.WheatherActivity">
+            android:name="Wheather.DailyActivityWeather"
+            android:parentActivityName="Wheather.WeatherActivity">
         </activity>
-        <activity android:name="Wheather.WheatherActivity">
+        <activity android:name="Wheather.WeatherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

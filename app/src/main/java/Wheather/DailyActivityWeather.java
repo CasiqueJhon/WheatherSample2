@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import Adapters.DailyWeatherAdapter;
 
-public class DailyActivityWheather extends ListActivity {
+public class DailyActivityWeather extends ListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +19,7 @@ public class DailyActivityWheather extends ListActivity {
 
         Intent intent = getIntent();
         //Getting the ArrayList from intent from WeatherActivity.
-        ArrayList<Day> days = intent.getParcelableArrayListExtra(WheatherActivity.DAYS_ARRAY_LIST);
+        ArrayList<Day> days = intent.getParcelableArrayListExtra(WeatherActivity.DAYS_ARRAY_LIST);
         DailyWeatherAdapter dailyWeatherAdapter = new DailyWeatherAdapter(this, days);
         setListAdapter(dailyWeatherAdapter);
     }
