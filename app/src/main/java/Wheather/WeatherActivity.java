@@ -1,13 +1,18 @@
 package Wheather;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +63,7 @@ public class WeatherActivity extends AppCompatActivity {
     public static final String DAYS_ARRAY_LIST = "days";
     public static final String HOURS_ARRAY_LIST = "hours_array_list";
     public static final String MINUTELY = "minutely";
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     @BindView(R.id.iv_icon)
     ImageView iconImageView;
@@ -75,11 +81,21 @@ public class WeatherActivity extends AppCompatActivity {
     TextView humidity;
     @BindView(R.id.tv_wind)
     TextView windSpeed;
+    @BindView(R.id.tv_city_name)
+    TextView cityName;
+    @BindView(R.id.tv_country_name)
+    TextView countryName;
+    @BindView(R.id.refresh_iv)
+    ImageButton refresh_iv;
 
     private ArrayList<Day> days;
     private ArrayList<Hour> hours;
     private ArrayList<Minute> minutes;
     private FusedLocationProviderClient mFusedLocationProviderClient;
+    private String forecastURL = "https://api.darksky.net/forecast";
+    private String units = "units=si";
+    private String apiKey = "29ac2f86be434312999df32b81cc69b4";
+
 
 
     @Override
@@ -87,17 +103,90 @@ public class WeatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wheather);
         ButterKnife.bind(this);
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+            getLocation();
+
+            refresh_iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (refresh_iv.isClickable()) {
+                        getLocation();
+                    }
+                }
+            });
+
+    }
 
 
+
+    private void getLocation() {
+        //Checking permissions granted or not
+        if (ContextCompat.checkSelfPermission(WeatherActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(WeatherActivity.this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(this)
+                        .setTitle("Requires Permission")
+                        .setMessage("Need your permission to access the feature")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ActivityCompat.requestPermissions(WeatherActivity.this,
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                    }
+                })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(WeatherActivity.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }else {
+            //Permission has already been granted
+            mFusedLocationProviderClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(final Location location) {
+                            if (location != null) {
+                                final Double mLatitude = location.getLatitude();
+                                final Double mLongitude = location.getLongitude();
+                                forecastCall(mLatitude.toString(), mLongitude.toString());
+
+                            }
+                        }
+                    });
+        }
+    }
+
+    public void forecastCall (String latitude, String longitude) {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String forecastURL = "https://api.darksky.net/forecast";
-        String apiKey = "29ac2f86be434312999df32b81cc69b4";
-        String mLatitude = "40.251025";
-        String mLongitude = "-3.702012";
-        String units = "units=si";
 
-        String request = forecastURL + "/" +apiKey  + "/" + mLatitude + "," + mLongitude + "?" + units;
+        String request = forecastURL + "/" +apiKey  + "/" + latitude + "," + longitude + "?" + units;
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, request,
@@ -116,7 +205,7 @@ public class WeatherActivity extends AppCompatActivity {
                             tv_max_temp.setText(String.format("Highest: %sº", currentWeather.getMaxTemp()));
                             tv_min_temp.setText(String.format("Lowest: %sº", currentWeather.getMinTemp()));
                             humidity.setText(String.format("Humidity: %s", currentWeather.getHumidity()));
-                            windSpeed.setText(String.format("WindSpeed: %s", currentWeather.getWindSpeed()));
+                            windSpeed.setText(String.format("Wind Speed: %s", currentWeather.getWindSpeed() + " km"));
 
 
                         } catch (JSONException e) {
@@ -134,34 +223,7 @@ public class WeatherActivity extends AppCompatActivity {
 
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
-
-        //Location by GPS
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location == null) {
-
-                }
-            }
-        });
-
     }
-
 
     @OnClick(R.id.btn_daily)
     public void dailyWeatherClick() {
@@ -301,6 +363,14 @@ public class WeatherActivity extends AppCompatActivity {
         }
 
         return minutes;
+
     }
+
+    /**public void getCityName() throws IOException {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = geocoder.getFromLocation(lat, lon, 1);
+        cityName.setText(addresses.get(0).getAddressLine(0));
+        countryName.setText(addresses.get(0).getAddressLine(2));
+    }**/
 
 }

@@ -8,6 +8,8 @@ public class Day implements Parcelable {
     private String dayName;
     private String dayDescription;
     private String rainProbability;
+    private String maxTemp;
+    private String minTemp;
 
     public Day () {
 
@@ -17,6 +19,8 @@ public class Day implements Parcelable {
         dayName = in.readString();
         dayDescription = in.readString();
         rainProbability = in.readString();
+        maxTemp = in.readString();
+        minTemp = in.readString();
     }
 
     public static final Creator<Day> CREATOR = new Creator<Day>() {
@@ -55,6 +59,22 @@ public class Day implements Parcelable {
         this.rainProbability = rainProbability;
     }
 
+    public String getMaxTemp() {
+        return maxTemp;
+    }
+
+    public void setMaxTemp(String maxTemp) {
+        this.maxTemp = maxTemp;
+    }
+
+    public String getMinTemp() {
+        return minTemp;
+    }
+
+    public void setMinTemp(String minTemp) {
+        this.minTemp = minTemp;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -65,5 +85,7 @@ public class Day implements Parcelable {
         parcel.writeString(dayName);
         parcel.writeString(dayDescription);
         parcel.writeString(rainProbability);
+        parcel.writeString(maxTemp);
+        parcel.writeString(minTemp);
     }
 }

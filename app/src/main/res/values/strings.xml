@@ -2,4 +2,6 @@
     <string name="app_name">WheatherSample2</string>
     <string name="no_data_to_display">No Data To Display</string>
     <string name="minutely_weeather">Minutely Weeather</string>
+    <string name="high_temp">High Temp</string>
+    <string name="lowest_temp">Lowest Temp</string>
 </resources>
