@@ -4,4 +4,5 @@
     <string name="minutely_weeather">Minutely Weeather</string>
     <string name="high_temp">High Temp</string>
     <string name="lowest_temp">Lowest Temp</string>
+    <string name="max_temp">Max Temp</string>
 </resources>

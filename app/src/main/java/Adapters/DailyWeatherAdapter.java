@@ -54,6 +54,8 @@ public class DailyWeatherAdapter extends BaseAdapter {
             viewHolder.dayTitle = view.findViewById(R.id.tv_day);
             viewHolder.dayDescription = view.findViewById(R.id.tv_day_description);
             viewHolder.rainProbability = view.findViewById(R.id.tv_rain_probability);
+            viewHolder.maxTemp = view.findViewById(R.id.tv_max_temp);
+            viewHolder.minTemp = view.findViewById(R.id.tv_min_temp);
 
             view.setTag(viewHolder);
 
@@ -66,6 +68,8 @@ public class DailyWeatherAdapter extends BaseAdapter {
         viewHolder.dayTitle.setText(day.getDayName());
         viewHolder.dayDescription.setText(day.getDayDescription());
         viewHolder.rainProbability.setText(day.getRainProbability());
+        viewHolder.maxTemp.setText(day.getMaxTemp());
+        viewHolder.minTemp.setText(day.getMinTemp());
 
         return view;
     }
@@ -74,5 +78,8 @@ public class DailyWeatherAdapter extends BaseAdapter {
         TextView dayTitle;
         TextView dayDescription;
         TextView rainProbability;
+        TextView maxTemp;
+        TextView minTemp;
+
     }
 }

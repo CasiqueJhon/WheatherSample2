@@ -184,7 +184,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/common_google_signin_btn_text_dark_disabled"
+        android:background="@drawable/bg_gradient_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/refresh"/>

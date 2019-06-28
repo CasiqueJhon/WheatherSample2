@@ -7,6 +7,7 @@ public class Hour implements Parcelable {
 
     private String hour;
     private String hourDescription;
+    private String temperature;
 
     public Hour() {
 
@@ -15,6 +16,7 @@ public class Hour implements Parcelable {
     protected Hour(Parcel in) {
         hour = in.readString();
         hourDescription = in.readString();
+        temperature = in.readString();
     }
 
     public static final Creator<Hour> CREATOR = new Creator<Hour>() {
@@ -45,6 +47,14 @@ public class Hour implements Parcelable {
         this.hourDescription = hourDescription;
     }
 
+    public String getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(String temperature) {
+        this.temperature = temperature;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -54,5 +64,6 @@ public class Hour implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(hour);
         parcel.writeString(hourDescription);
+        parcel.writeString(temperature);
     }
 }

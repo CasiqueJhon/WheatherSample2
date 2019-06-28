@@ -52,6 +52,7 @@ public class HourlyWeatherAdapter extends BaseAdapter {
 
             viewHolder.hour = view.findViewById(R.id.tv_hour_weather);
             viewHolder.hourDescription = view.findViewById(R.id.tv_hour_description);
+            viewHolder.temperarute = view.findViewById(R.id.tv_temperature);
 
             view.setTag(viewHolder);
 
@@ -63,6 +64,7 @@ public class HourlyWeatherAdapter extends BaseAdapter {
 
         viewHolder.hour.setText(hour.getHour());
         viewHolder.hourDescription.setText(hour.getHourDescription());
+        viewHolder.temperarute.setText(hour.getTemperature());
 
         return view;
     }
@@ -70,6 +72,8 @@ public class HourlyWeatherAdapter extends BaseAdapter {
     static class ViewHolder {
         TextView hour;
         TextView hourDescription;
+        TextView temperarute;
+
     }
 
 }

@@ -64,6 +64,8 @@ public class WeatherActivity extends AppCompatActivity {
     public static final String HOURS_ARRAY_LIST = "hours_array_list";
     public static final String MINUTELY = "minutely";
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    public static final String TEMPERATURE_HIGH = "temperatureHigh";
+    public static final String TEMPERATURE_LOW = "temperatureLow";
 
     @BindView(R.id.iv_icon)
     ImageView iconImageView;
@@ -298,10 +300,14 @@ public class WeatherActivity extends AppCompatActivity {
             String description = jsonWithDayData.getString(SUMMARY);
             //Need to convert time to day format using "EEEE" format with dayFormat
             String dayName = dateFormat.format(jsonWithDayData.getDouble(TIME) * 1000);
+            String maxTemp = Math.round(jsonWithDayData.getDouble(TEMPERATURE_HIGH)) + "";
+            String minTemp =  Math.round(jsonWithDayData.getDouble(TEMPERATURE_LOW)) + "";
 
             day.setDayName(dayName);
             day.setDayDescription(description);
             day.setRainProbability(rainProbability);
+            day.setMaxTemp(String.format("Highest %sº ", maxTemp));
+            day.setMinTemp(String.format("Lowest: %sº ", minTemp));
 
             days.add(day);
         }
@@ -327,9 +333,11 @@ public class WeatherActivity extends AppCompatActivity {
 
            String title = dateFormat.format(hourlyData.getDouble(TIME) * 1000);
            String description = hourlyData.getString(SUMMARY);
+           String hourlyTemperature = Math.round(hourlyData.getDouble(TEMPERATURE)) + "";
 
            hour.setHour(title);
            hour.setHourDescription(description);
+           hour.setTemperature(String.format("Temperature: %sº ", hourlyTemperature));
 
            hours.add(hour);
         }
